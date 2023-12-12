@@ -1,0 +1,32 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: luminous
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/shadab-h
+
+---
+
+About this blog
+---
+title: "Welcome To My Blog"
+author: "Shadab Haque"
+date: "2023-12-11"
+categories: [news]
+---
+
+ 
+ This has been created as the assignment of the course offered in Virginia Tech, Machine Learning I, CS 5805.
+
+
+My name is Shadab Haque and I am Computer Engineering Graduate Student at Virginia Tech.
+
+Thank You!
+
+
+
+
+

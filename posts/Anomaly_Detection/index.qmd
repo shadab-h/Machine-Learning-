@@ -1,0 +1,73 @@
+---
+title: "Anomaly Detection"
+author: "Shadab Haque"
+date: "2023-12-11"
+categories: [ Anomaly Detection]
+image: "image.png"
+
+---
+# Title: Anomaly Detection with the Digits Dataset using One-Class SVM:
+Anomaly detection is an essential process in various fields for identifying unusual patterns or data points that significantly deviate from the majority. These anomalies can be point anomalies, contextual anomalies, or collective anomalies, depending on their characteristics. Techniques for anomaly detection span a wide range, from statistical methods like Z-score and Gaussian distribution to machine learning approaches such as Isolation Forest and Autoencoders, and even deep learning neural networks.
+# Data Preprocessing:
+In this analysis, we'll employ the Digits dataset, a well-known dataset in machine learning consisting of 8x8 pixel images of handwritten digits. Our chosen method for detecting anomalies is the One-Class SVM algorithm. This technique is particularly adept at identifying outliers in datasets where anomalies are not explicitly labeled. The first step involves loading the Digits dataset and preprocessing it, which includes standardization to normalize the data.
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.svm import OneClassSVM
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_digits
+
+# Load the Digits dataset
+digits = load_digits()
+X = digits.data
+
+# Standardize the data
+scaler = StandardScaler()
+X_std = scaler.fit_transform(X)
+```
+# Applying One-Class SVM for Anomaly Detection
+One-Class SVM is a specialized version of the Support Vector Machine algorithm that is used for anomaly detection. It works by identifying the smallest sphere that encloses the data in a high-dimensional space. Data points that lie outside this sphere are considered anomalies or outliers.
+
+```{python}
+# Define and fit the One-Class SVM model
+model = OneClassSVM(kernel='rbf', gamma='auto', nu=0.05)
+model.fit(X_std)
+
+# Predict anomalies (outliers are labeled as -1)
+y_pred = model.predict(X_std)
+```
+# Visualization of Anomalies:
+Visualizing the results is crucial for understanding the model's performance. We will display some of the digit images classified as anomalies by our One-Class SVM model, providing a visual perspective on what the model perceives as outliers.
+```{python}
+# Filtering out the anomaly images
+anomaly_indices = np.where(y_pred == -1)
+anomaly_images = digits.images[anomaly_indices]
+
+# Plotting the anomaly images
+plt.figure(figsize=(10, 2))
+for i, image in enumerate(anomaly_images[:5]):
+    plt.subplot(1, 5, i + 1)
+    plt.imshow(image, cmap='gray')
+    plt.axis('off')
+plt.suptitle('Anomaly Detected Images using One-Class SVM')
+plt.show()
+```
+
+This visualization offers insights into the types of digit images that are flagged as anomalies by the One-Class SVM. By using this algorithm on the Digits dataset, we can effectively isolate unusual or atypical digit representations. Such capability is invaluable in scenarios where it is crucial to identify outlying data points that could signify errors, fraud, or rare events. The One-Class SVM algorithm's strength lies in its ability to learn a decision function based on the 'normal' data and use this to identify data points that deviate from this norm, making it a powerful tool for anomaly detection in various applications.
+
+Histogram of Anomaly Scores:
+
+```{python}
+# Compute the anomaly scores using the One-Class SVM decision function
+anomaly_scores = model.decision_function(X_std)
+
+# Plotting the histogram of anomaly scores
+plt.figure(figsize=(8, 4))
+plt.hist(anomaly_scores, bins=50, color='blue', alpha=0.7)
+plt.title('Histogram of Anomaly Scores')
+plt.xlabel('Anomaly Score')
+plt.ylabel('Frequency')
+plt.show()
+```
+
+We can visualize the distribution of anomaly scores assigned by the One-Class SVM model. These scores indicate how far away each data point is from the decision boundary.
